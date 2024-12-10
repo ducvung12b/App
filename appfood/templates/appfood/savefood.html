@@ -1,0 +1,94 @@
+{% extends "appfood/base.html" %}
+{%load static%}
+
+{% block savefood%}
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="side-bar d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="{% url 'home' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Trang chủ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'postfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Thêm bài viết
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'notifications' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Thông báo
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'myfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Quản lý bài viết
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'savefood' %}" class="nav-link active" aria-current="page">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Bài viết đã lưu
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'list_user' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Người Dùng
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    
+</main>
+<br>
+<link rel="stylesheet" href="{%static "css/savelike.css"%}">
+<div class="container mt-5 mb-5" style="padding-top: 10px;">
+    <div class="d-flex justify-content-center row" >
+        <div class="col-md-10">
+
+            {% if liked_recipes %}
+                {% for recipe in liked_recipes %}
+
+                <div class="row p-2 bg-white border rounded mt-2" style="width: 890px;float: right;">
+                    <div class="col-md-3 mt-1">
+                        
+                        <img class="img-fluid img-responsive rounded product-image" style="width: 200px;height: 150px;" src="{{ recipe.images.first.image.url }}">
+                        
+                    </div>
+                    <div class="col-md-6 mt-1">
+                        <h4>{{recipe.title}} </h4>
+                        <i class="fa fa-star checked" style="color: yellow;"></i>
+                        <h5 class="text-justify text-truncate para mb-0">Giới Thiệu : {{recipe.introduce}}<br><br></h5>
+                    </div>
+                    <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                        <div class="d-flex flex-column mt-4"><a href="{% url 'detail' recipe.id %}" class="btn btn-outline-success">Xem Chi Tiết </a>
+                            <br>
+                            <form method="post" action="{% url 'like_recipe' recipe.id %}"> 
+                                {% csrf_token %} 
+                                <button type="submit" class="btn {% if user in recipe.liked_tym.all %}btn-danger{% else %}btn-primary{% endif %}" style="height: 30px;width: 120px;padding-top: 7px;border: 1px solid #6751a4;"> 
+                                    {% if user in recipe.liked_tym.all %}Đã Thích{% else %}Yêu Thích{% endif %} 
+                                </button> 
+                            </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                
+            {% endif %}
+        </div>
+        
+    </div>
+</div>
+
+{% endblock savefood%}

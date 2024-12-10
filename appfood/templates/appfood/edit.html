@@ -1,0 +1,78 @@
+{% extends "appfood/base.html" %}
+{%load static%}
+
+{% block edit %}
+
+{% comment %} <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> {% endcomment %}
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<link rel="stylesheet" href="{%static "css/postpage.css"%}">    
+<!-- edit_recipe.html -->
+<h2>Chỉnh sửa công thức</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container">
+        <div class="card">
+            <div class="container-fluid">
+                <div class="wrapper row">
+                    <div class="wrapper row">
+                        {% if error %}
+                            <p style="color: red;">{{ error }}</p>
+                        {% endif %}
+                        <div class="preview col-md-6">
+                            <label for="title">Tên món ăn:</label>
+                            <input type="text" id="title" name="title" value="{{ recipe.title }}" class="form-control" required>
+                        
+                            <br>
+                        
+                            <label for="introduce">Giới thiệu:</label>
+                            <textarea id="introduce" name="introduce" class="form-control" required>{{ recipe.introduce }}</textarea>
+                    
+                            <br>
+                    
+                            <label for="description">Mô tả:</label>
+                            <textarea id="description" name="description" class="form-control" required>{{ recipe.description }}</textarea>
+                        
+                            <br>
+                            
+                            <div>
+                                <label for="classify">Chọn phân loại món ăn:</label>
+                                <label><input type="radio" id="snacks" name="classify" value="Món Ăn Vặt"> Món Ăn Vặt</label>
+                                <label><input type="radio" id="vegetarian" name="classify" value="Chay"> Chay</label>
+                                <label><input type="radio" id="asian" name="classify" value="Món Á"> Món Á</label>
+                                <label><input type="radio" id="european" name="classify" value="Món Âu"> Món Âu</label>
+                                <label><input type="radio" id="grill" name="classify" value="Nướng"> Nướng</label>
+                                <label><input type="radio" id="appetizer" name="classify" value="Khai Vị"> Khai Vị</label>
+                                <label><input type="radio" id="dessert" name="classify" value="Tráng Miện"> Tráng Miện</label>
+                            </div>
+                            <br>
+                            <label for="images">Chọn ảnh mới (nếu có):</label>
+                            <input type="file" id="images" name="images" class="form-control" multiple>
+                        </div>
+                        <p></p>
+                        
+                        <div class="form-group">
+                            <h3>Ảnh hiện tại:</h3>
+                            {% for image in images %}
+                            <br>
+                                <div>
+                                    <img src="{{ image.image.url }}" alt="Recipe Image" width="200">
+                                    <label>
+                                        <input type="checkbox" name="delete_images" value="{{ image.id }}"> Xóa ảnh này
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock edit %}

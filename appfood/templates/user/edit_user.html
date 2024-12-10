@@ -1,0 +1,88 @@
+{% extends "user/base_user.html" %}
+{%load static%}
+{%block page_user%}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<main>
+    <style>
+        body{
+            .containerr {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+}
+
+.profile-image img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.profile-details {
+    margin-left: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    color: white;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+        }
+    </style>
+    
+    
+    
+        
+            <title>Chỉnh Sửa Thông Tin Người Dùng</title>
+            <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        
+            <div class="containerr">
+                <h1>Chỉnh Sửa Thông Tin Người Dùng</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="first_name">Tên:</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user_profile.user.first_name }}" required><br>
+        
+                    <label for="last_name">Họ:</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user_profile.user.last_name }}" required><br>
+        
+                    <label for="birth_date">Ngày Sinh:</label>
+                    <input type="date" id="birth_date" name="birth_date" value="{{ user_profile.birth_date|date:'Y-m-d' }}"><br>
+        
+                    <label for="gender">Giới Tính:</label>
+                    <select id="gender" name="gender">
+                        <option value="" {% if user_profile.gender == "" %}selected{% endif %}>Chưa xác định</option>
+                        <option value="M" {% if user_profile.gender == "M" %}selected{% endif %}>Nam</option>
+                        <option value="F" {% if user_profile.gender == "F" %}selected{% endif %}>Nữ</option>
+                        <option value="O" {% if user_profile.gender == "O" %}selected{% endif %}>Khác</option>
+                    </select><br>
+        
+                    <label for="profile_image">Ảnh Cá Nhân:</label>
+                    <input type="file" id="profile_image" name="profile_image"><br>
+        
+                    <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                </form>
+            </div>
+        
+        
+    
+    
+</main>
+
+{% endblock page_user%}
+

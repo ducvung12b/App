@@ -1,0 +1,91 @@
+{% extends "user/base_user.html" %}
+{%load static%}
+{%block search_user%}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="side-bar d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="{% url 'home' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Trang chủ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'postfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Thêm bài viết
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'notifications' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Thông báo
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'myfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Quản lý bài viết
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'savefood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Bài viết đã lưu
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'list_user' %}" class="nav-link active" aria-current="page">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Người Dùng
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                
+                <!--  -->
+                <div class="row d-flex flex-wrap">
+                    {% for user in users %}
+                        <div class="col-md-4">
+                            <div class="ibox" style="padding-top: 20px;">
+                                <div class="ibox-content product-box">
+                                    <small class="text-muted">Tên: <b>
+                                        <a class="navbar-brand user_name" href="{% url 'detail_user' user.id %}"> 
+                                        {{ user.last_name }} {{ user.first_name }}</b></small>
+                                    <div>
+                                        <small class="text-muted">Email: {{ user.email }}</small>
+                                    </div>
+                                    {% if user.id in following %}
+                                        <div class="follow-btn" style="margin-top: 10px;">
+                                            <form method="post" action="{% url 'unfollow_user' user.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Unfollow</button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <div class="follow-btn" style="margin-top: 10px;">
+                                            <form method="post" action="{% url 'follow_user' user.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary">Follow</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+
+                <!--  -->
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock search_user%}

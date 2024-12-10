@@ -1,0 +1,76 @@
+{% extends "admin/base_admin.html" %}
+{%load static%}
+{%block home_admin%}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="side-bar d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="{% url 'ad' %}" class="nav-link active" aria-current="page">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Trang Chủ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'rpfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Bài Viết Vi Phạm
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a href="{% url 'logout' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Đăng Xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                
+                <!--  -->
+                <div class="row d-flex flex-wrap">
+                    {% for recipe in recipes %}
+                        <div class="col-md-4">
+                            <div class="ibox" style="padding-top: 20px;">
+                                <div class="ibox-content product-box">
+                                    {% if recipe.images.first %}
+                                    <div class="product" style="height: 170px;">
+                                        <img style="height: 170px;width: 270px;" src="{{ recipe.images.first.image.url }}" alt="">
+                                    </div>
+                                    {% endif %}
+                                    <div class="product-desc">
+                                        <small class="text-muted">Đăng bởi: <b>{{ recipe.author.username }}</b></small>
+                                        <br>
+                                        
+                                        <small class="text-muted">Lược Xem: {{ recipe.views }}</small>
+                                        <!-- {% url 'detail_admin' recipe.id %} -->
+                                        <a href="{% url 'detail_admin' recipe.id %}" class="product-name">{{ recipe.title }}</a>
+                                        <small class="text-muted">Đã Có: {{ recipe.total_likes }} Người Thích</small>
+                                        <div>
+                                            <small class="text-muted">Ngày Đăng: {{recipe.images.first.uploaded_at|date:"d/m/Y"}}</small>
+                                        </div>
+                                        <div>
+                                            <small style="float: left;" class="text-muted">Thể Loại:</small>
+                                            {% for category in recipe.classify.all %}
+                                                <small class="text-muted" style="float: left;">{{ category.name }}</small>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="m-t text-right" style="padding-top: 30px;padding-left: 1%;">
+                                            <a href="{% url 'admin_delete' recipe.id %}" class="btn btn-outline-danger" style="height: 30px;width: 90px;padding-top: 7px;border: 1px solid #b91111;" > Xóa </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+
+                <!--  -->
+            </div>
+        </div>
+    </div>
+</main>
+{%endblock home_admin%}

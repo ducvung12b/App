@@ -1,0 +1,135 @@
+{% extends "appfood/base.html" %}
+{% load static %}
+
+{% block notifications %}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    
+
+    .containerr {
+        width: 100%;
+        max-width: 500px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .notification-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .notification-item {
+        background-color: rgb(216, 210, 203);
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    .unread {
+        font-weight: bold;
+    }
+
+    .notification-item a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="side-bar d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="{% url 'home' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Trang chủ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'postfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Thêm bài viết
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'notifications' %}" class="nav-link active" aria-current="page">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Thông báo
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'myfood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Quản lý bài viết
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'savefood' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Bài viết đã lưu
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'list_user' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Người Dùng
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}" class="nav-link text-white">
+                                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    
+</main>
+
+<div class="containerr" style="float:right">
+    <h1>Thông Báo</h1>
+    <ul class="notification-list">
+        {% for notification in notifications %}
+        <li class="notification-item {% if not notification.read %}unread{% endif %}">
+            <a href="{% if notification.recipess %}{% url 'detail' notification.recipess.id %}{% else %}#{% endif %}">
+                {{ notification.sender.userprofile.last_name }} {{ notification.sender.userprofile.first_name }}: {{ notification.message }}<br>
+                <small>{{ notification.timestamp }}</small>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    <!-- <a href="{% url 'home' %}" class="back-link">Quay Lại</a> -->
+</div>
+
+
+
+
+   
+</div>
+
+
+
+
+
+{% endblock notifications %}

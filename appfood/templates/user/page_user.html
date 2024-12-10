@@ -1,0 +1,117 @@
+{% extends "user/base_user.html" %}
+{%load static%}
+{%block page_user%}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<main>
+    <style>
+        body{
+            .containerr {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+}
+
+.profile-image img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.profile-details {
+    margin-left: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    color: white;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+        }
+    </style>
+    <div class="containerr">
+        <h1>Trang Cá Nhân</h1>
+        <div class="profile-card">
+            <div class="profile-image">
+                {% if user_profile.profile_image %}
+                    <img src="{{ user_profile.profile_image.url }}" alt="Profile Image">
+                {% else %}
+                    <img src="{% static 'img/user.png' %}" alt="Default Profile Image">
+                {% endif %}
+            </div>
+            <div class="profile-details">
+                <p><strong>Họ và Tên:</strong> {{ user_profile.user.first_name }} {{ user_profile.user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user_profile.user.email }}</p>
+                <p><strong>Ngày Sinh:</strong> {{ user_profile.birth_date }}</p>
+                <p><strong>Giới Tính:</strong> 
+                    {% if user_profile.gender == 'M' %}
+                        Nam
+                    {% elif user_profile.gender == 'F' %}
+                        Nữ
+                    {% else %}
+                        Khác
+                    {% endif %}
+                </p>
+                <p><strong>Số người theo dõi bạn:</strong> {{ followers_count }}</p>
+                <p><strong>Số người bạn theo dõi:</strong> {{ following_count }}</p>
+            </div>
+            
+        </div>
+        <a href=" {% url 'edit_user'%}  " class="btn btn-primary">Chỉnh Sửa Thông Tin</a>
+    </div>
+
+</main>
+
+<div class="row d-flex flex-wrap">
+    <h3 style="padding-left: 40%;">Các Sản Phẩm Của Bạn</h3>
+    {% for recipe in recipes %}
+        <div class="col-md-4">
+            <div class="ibox" style="padding-top: 20px;">
+                <div class="ibox-content product-box">
+                    {% if recipe.images.first %}
+                    <div class="product" style="height: 170px;">
+                        <img style="height: 170px;width: 270px;" src="{{ recipe.images.first.image.url }}" alt="">
+                    </div>
+                    {% endif %}
+                    <div class="product-desc">
+                        <small class="text-muted">Đăng bởi: <b>{{ recipe.author.username }}</b></small>
+                        <br>
+                        <small class="text-muted">Lượt Xem: {{ recipe.views }}</small>
+                        <a href="{% url 'detail' recipe.id %}" class="product-name">{{ recipe.title }}</a>
+                        <small class="text-muted">Đã Có: {{ recipe.total_likes }} Người Thích</small>
+                        <div>
+                            <small class="text-muted">Ngày Đăng: {{recipe.images.first.uploaded_at|date:"d/m/Y"}}</small>
+                        </div>
+                        <div>
+                            <small style="float: left;" class="text-muted">Thể Loại:</small>
+                            {% for category in recipe.classify.all %}
+                                <small class="text-muted" style="float: left;">{{ category.name }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+</div>
+
+
+
+{% endblock page_user%}
+

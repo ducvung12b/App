@@ -1,0 +1,195 @@
+{% extends "appfood/base.html" %}
+{%load static%}
+
+
+
+{%block detail%}
+<!--  CSS -->
+
+{% comment %} <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> {% endcomment %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+<link rel="stylesheet" href="{%static "css/fixdetail.css"%}">
+<link rel="stylesheet" href="{%static "css/comment.css"%}">
+
+<!--  JS -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="{%static "js/detail.js"%}"></script>
+
+
+
+
+
+
+
+<div class="container">
+	<div class="card">
+		<div class="container-fliud">
+			
+			<div class="wrapper row">
+				<div class="preview col-md-6">
+					
+					<div class="preview-pic tab-content">
+						{% for image in images|slice:":4" %}
+						<div class="tab-pane {% if forloop.first %}active{% endif %}" id="pic-{{ forloop.counter }}">
+							<img src="{{ image.image.url }}" style="width: 500px;height: 500px; border: 2px solid #000000;"/>
+						</div>
+					{% endfor %}
+				</div>
+			
+				<ul class="preview-thumbnail nav nav-tabs">
+					{% for image in images|slice:":4" %}
+						<li class="{% if forloop.first %}active{% endif %}">
+							<a data-target="#pic-{{ forloop.counter }}" data-toggle="tab">
+								<img src="{{ image.image.url }}" style="width: 100px;height: 60px;border: 1px solid #0d1214;"/>
+							</a>
+						</li>
+					{% endfor %}
+					</ul>
+					
+				</div>
+				<div class="details col-md-6">
+					<h3 class="product-title">Tên Món Ăn : {{recipe.title}}</h3>
+                    <small class="text-muted">Đăng bởi: <b>{{ author_profile.user.last_name }} {{ author_profile.user.first_name }} </b></small>
+                    <p>Ngày Đăng: {{ recipe.created_at|date:"d/m/Y" }}</p>
+					<div class="rating">
+						<span class="review-no">Lược Xem : {{ recipe.views }}</span>
+                        
+					</div>
+					<p class="product-title">Giới Thiệu : </p> <p>{{recipe.introduce}}</p>
+					<h5 class="product-title">mô tả cách chế biến: </h5>
+					<p class="product-description">{{recipe.description}}</p>
+					
+                     
+                    <br>
+                    
+					<br>
+
+
+
+					<div class="action">
+                        
+						<form method="post" action="{% url 'like_recipe' recipe.id %}"class="like-form"> 
+                            {% csrf_token %} 
+                            <button type="submit" class="btn {% if user in recipe.liked_tym.all %}btn-danger{% else %}btn-primary{% endif %}" style="height: 30px;width: 120px;padding-top: 7px;border: 1px solid #6751a4;"> 
+                                {% if user in recipe.liked_tym.all %}Đã Thích{% else %}Yêu Thích{% endif %} 
+                            </button> 
+                        </form>
+                        
+						{% if not is_own_recipe %}
+                            <form method="post" action="{% if is_following %}{% url 'unfollow_user' recipe.author.id %}{% else %}{% url 'follow_user' recipe.author.id %}{% endif %}"> 
+                                {% csrf_token %} 
+                                <button type="submit" class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}"> 
+                                    {% if is_following %}Unfollow
+                                    {% else %}Follow
+                                    {% endif %} 
+                                </button> 
+                            </form>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'report_food' recipe.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger" style="height: 30px;width: 90px;padding-top: 7px;border: 1px solid #fe3b0b;">Tố Cáo</button>
+                        </form>  
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<br><br>
+
+<!-- Hiển thị danh sách và số lượng bình luận -->
+<h3>Những Đánh Giá Khác ({{ total_count }}) :</h3>
+<br>
+
+<!-- Kiểm tra xem comment có reply hay không -->
+{% if comments.count > 0 %}
+
+ <!-- Container bọc toàn bộ reply (chỉ hiển thị nếu có reply) -->
+<div style="max-height: 600px;  overflow-y: auto; border: 4px solid #e8ea61; padding: 10px; border-radius: 5px;">
+
+
+<div class="comments-section" style="padding-left: 50px; width: 90%;">
+    {% for comment in comments %}
+        <div class="comment" style="padding-top: 20px;">
+            <p style="border-bottom: 1px solid #000000;"></p>
+            <p><strong>{{ comment.user.last_name }} {{ comment.user.first_name }} </strong> - {{ comment.created_at }}</p>
+            <p>{{ comment.content }}</p>
+            <!-- Nút duy nhất để xem reply và form trả lời -->
+            <a href="#" class="toggle-replies-button" data-comment-id="{{ comment.id }}">Xem Trả lời</a>
+            <!-- Form trả lời và reply, ẩn mặc định -->
+            <div class="reply-section" id="reply-section-{{ comment.id }}" style="display: none; padding-left: 40px;">  
+                 <!-- Kiểm tra xem comment có reply hay không -->
+                 {% if comment.replies.count > 0 %}
+                 <!-- Container bọc toàn bộ reply (chỉ hiển thị nếu có reply) -->
+                 <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ffffff; padding: 10px; border-radius: 5px;">
+                    <!-- Hiển thị reply --> 
+                    <div class="replies"  >
+                        {% for reply in comment.replies.all %}
+                            <div class="reply">
+                                <p><strong>{{ reply.user.last_name }} {{ reply.user.first_name }} </strong> - {{ reply.created_at }}</p>
+                                <p>{{ reply.content }}</p>
+                                <p style="border-bottom: 1px solid #000000;"></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Form trả lời -->
+                 <h5>Nhập Bình Luận Của Bạn :</h5>
+                <form method="POST" class="reply-form" id="reply-form-{{ comment.id }}">
+                    {% csrf_token %}
+                    <textarea style="height: 45px;" name="content" rows="2" placeholder="Nhập Vào Đây......" class="form-control"></textarea>
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <br>
+                    <button type="submit" class="btn btn-primary">Trả Lời</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>  
+</div>
+{% endif %}
+<!-- Form bình luận -->
+<h2 style="background-color: rgb(237, 228, 155);">Bình Luận Món Ăn {{ recipe.title }} : </h2>
+<form method="POST" style="padding-left: 50px; width: 90%;">
+    {% csrf_token %}
+    <!-- Tạo label và trường nhập liệu cho form -->
+    <div class="form-group" >
+        <label for="id_content">Nhập Bình Luận Của Bạn :</label>
+		<br>
+        <textarea style="height: 45px;" id="id_content" name="content" rows="3" placeholder="Nhập Vào Đây......" class="form-control">{{ form.content.value }}</textarea>
+		<br>
+		<button type="submit" class="btn btn-primary" style="padding-top: 10px;">Bình Luận</button>
+        <br>
+        <p></p>		
+	</div> 
+</form>
+
+<!-- JavaScript để hiển thị reply và form trả lời -->
+<script>
+    document.querySelectorAll('.toggle-replies-button').forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            var commentId = this.getAttribute('data-comment-id');
+            var replySection = document.getElementById('reply-section-' + commentId);
+
+            // Chuyển đổi hiển thị phần reply và form trả lời
+            if (replySection.style.display === 'none' || replySection.style.display === '') {
+                replySection.style.display = 'block';
+                this.textContent = 'Ẩn Trả lời';
+            } else {
+                replySection.style.display = 'none';
+                this.textContent = 'Xem Trả lời';
+            }
+        });
+    });
+</script>
+
+<p style="padding-bottom: 100px;"></p>
+{% endblock detail%}
